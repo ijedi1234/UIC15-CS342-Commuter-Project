@@ -1,7 +1,7 @@
 package uic.project.commuter.printer;
 
-public class IntroBehavior implements PrintBehavior {
-	
+public class IntroBehavior implements PrintBehavior 
+{
 	public void doPrinting() 
 	{
 		System.out.println();
@@ -22,5 +22,4 @@ public class IntroBehavior implements PrintBehavior {
 		System.out.println();
 		System.out.println("          REMINDER: Type 'Help' if you need to print out the commands with description.");
 	}
-	
 }
