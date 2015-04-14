@@ -1,7 +1,7 @@
 package uic.project.commuter.printer;
 
-public class HelpBehavior implements PrintBehavior {
-	
+public class HelpBehavior implements PrintBehavior 
+{
 	public void doPrinting() 
 	{
 		System.out.println();
@@ -31,5 +31,4 @@ public class HelpBehavior implements PrintBehavior {
 		System.out.println(" quit");
 		System.out.println();
 	}
-	
 }
