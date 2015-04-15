@@ -2,9 +2,7 @@ package uic.project.commuter.printer;
 
 public class HelpBehavior implements PrintBehavior 
 {
-	public void doPrinting() 
-	{
-			/**
+        /**
 	 * This behavior provides help if the user needs to read the written commands along with
 	 * descriptions. 
 	 */
