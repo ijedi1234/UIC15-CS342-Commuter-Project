@@ -141,22 +141,30 @@ public class MainClass {
 				//Informs the tree to override the leader of a carpool.
 				tree.toggleLeader(tree.findCommuter(inputArgs[1]), tree);
 			} else if(command.equals("activate")) {
+				//Activate the given object.
 				tree.activate(inputArgs[1]);
 			} else if(command.equals("deactivate")) {
+				//Deactivate the given object.
 				tree.deactivate(inputArgs[1]);
 			} else if(command.equals("quit")) {
+				//Leaves the loop and handles code afterwards.
 				break;
 			} else {
+				//If the given command does not exist, say so.
 				System.out.println("Error: That command does not exist.");
 			}
 		}
-		System.out.print("\nWould you like to save? ");
+		//Offer to save the file.
+		System.out.print("\nWould you like to save? (y/n)");
 		inputArgs = parser.parse(argsObject.nextLine());
+		//yes or y are the most usual answers to this, given the prompt.
 		if(inputArgs[0].equals("yes") || inputArgs[0].equals("y")) {
+			//Get the file and save.
 			System.out.print("Enter the filename or filepath: ");
 			inputArgs = parser.parse(argsObject.nextLine());
 			saver.operate(tree, new File(inputArgs[0]));
 		}
+		//Do final operations before termination.
 		argsObject.close();
 	}
 	

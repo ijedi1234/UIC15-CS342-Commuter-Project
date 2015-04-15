@@ -6,13 +6,38 @@ import java.util.ArrayList;
 
 public class CommuterElement extends CarPoolComponent {
 	
-	private boolean isLeader;
+	private boolean isLeader; //Special field that determines leadership status.
 	
-	public void printSelf() {}
-	public boolean equals(CarPoolComponent obj) {return true;}
+	/**
+	 * Print out available information on 'this' object. The tree is not printed here.
+	 */
+	public void printSelf() {
+		System.out.print("Name: " + this.getName() + " Status: " + this.getStatus() 
+				+ " Associated Distance: " + this.getDistanceTraveled() + " Is Leader? " + this.getIsLeader());
+	}
+	
+	/**
+	 * This method handles equality between 'this' and another CarPoolComponent.
+	 * @return The boolean representing the equality between the two objects.
+	 */
+	public boolean equals(CarPoolComponent obj) {
+		return obj.getName().equals(this.getName());
+	}
+	
+	/**
+	 * Getter and setter for the field isLeader.
+	 */
 	public boolean getIsLeader() {return isLeader;}
 	public void setIsLeader(boolean isLeader_input) {isLeader = isLeader_input;}
+	
+	/**
+	 * Activates this object.
+	 */
 	public void activate(String name) {this.setStatus(true);}
+	
+	/**
+	 * Deactivates this object.
+	 */
 	public void deactivate(String name) {this.setStatus(false);}
 	
 	public CommuterElement(String tag, boolean inputStat, double distanceTraveled_input, boolean bLeader) {
