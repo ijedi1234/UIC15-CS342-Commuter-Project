@@ -155,7 +155,7 @@ public class MainClass {
 			}
 		}
 		//Offer to save the file.
-		System.out.print("\nWould you like to save? (y/n)");
+		System.out.print("\nWould you like to save (y/n)? ");
 		inputArgs = parser.parse(argsObject.nextLine());
 		//yes or y are the most usual answers to this, given the prompt.
 		if(inputArgs[0].equals("yes") || inputArgs[0].equals("y")) {
@@ -164,8 +164,12 @@ public class MainClass {
 			inputArgs = parser.parse(argsObject.nextLine());
 			saver.operate(tree, new File(inputArgs[0]));
 		}
-		//Do final operations before termination.
+		// Do final operations before termination.
 		argsObject.close();
+
+        // Exit program
+        System.out.println("Good bye.");
+        System.exit(0);
 	}
 	
 	/**
