@@ -127,10 +127,102 @@ public class CarPoolComposite extends CarPoolComponent {
 		return null;
 	}
 	
-	public CarPoolComponent addCommuter(CarPoolComponent person, CarPoolComponent cp) {return null;}
-	public CarPoolComponent removeCommuter(CarPoolComponent person) {return null;}
-	public CarPoolComponent addCarpool(CarPoolComponent cp, double distance) {return null;}
-	public CarPoolComponent removeCarpool(CarPoolComponent cp) {return null;}
+	/**
+	 * Adds a constructed commuter to the system.
+	 * ONLY the head should use this method in other classes.
+	 * Prevents duplicate addition.
+	 * @param person - The person to add. 
+	 * @param cp - The carpool to operate within. (null for head)
+	 * @return A receipt for the added person.
+	 */
+	public CarPoolComponent addCommuter(CarPoolComponent person, CarPoolComponent cp) {
+		if(person == null || this.findCommuter(person.getName()) != null) { //Invalid person or existing person.
+			return null;
+		}
+		if(cp == null) { //Null cp? Then it must be the head.
+			tree.add(0, person);
+			return person;
+		}
+		CarPoolIterator iter = new CarPoolIterator(); //Setup iterator & index.
+		int index = 0;
+		while(iter.hasNext(this)) { //Find the carpool, modify it, and return the receipt.
+			CarPoolComponent obj = iter.next(this);
+			if(obj.getClass() == this.getClass() && cp.equals(obj)) {
+				obj.addCommuter(person, null);
+				tree.set(index, obj);
+				return person;
+			}
+			index++;
+		}
+		//Can't find it? Return null.
+		return null;
+	}
+	
+	/**
+	 * Removes a constructed commuter from the system.
+	 * ONLY the head should use this method in other classes.
+	 * @param person - The person to remove. 
+	 * @return A receipt for the removed person.
+	 */
+	public CarPoolComponent removeCommuter(CarPoolComponent person) {
+		if(person == null) { //Invalid person.
+			return null;
+		}
+		CarPoolIterator iter = new CarPoolIterator(); //Setup iterator & index.
+		int index = 0;
+		while(iter.hasNext(this)) { //Find the commuter and remove. If carpools are found, apply this method.
+			CarPoolComponent obj = iter.next(this);
+			if(obj.getClass() == this.getClass()) {
+				obj.removeCommuter(person);
+				tree.set(index, obj);
+				return person;
+			} else if(obj.equals(person)) {
+				tree.remove(index);
+				return person;
+			}
+			index++;
+		}
+		return null;
+	}
+	
+	/**
+	 * Adds a constructed carpool to the system.
+	 * ONLY the head should use this method in other classes.
+	 * @param cp - The carpool to add.
+	 * @param distance - A duplicate distance value for saving a function call.
+	 * @return A receipt for the added carpool.
+	 */
+	public CarPoolComponent addCarpool(CarPoolComponent cp, double distance) {
+		if(cp == null || this.findCarpool(cp.getName()) != null) { //Invalid carpool or existing carpool.
+			return null;
+		}
+		tree.add(cp); //Add to the end and return.
+		return cp;
+	}
+	
+	/**
+	 * Removes a constructed carpool to the system.
+	 * ONLY the head should use this method in other classes.
+	 * @param cp - The carpool to remove.
+	 * @return A receipt for the removed carpool. 
+	 */
+	public CarPoolComponent removeCarpool(CarPoolComponent cp) {
+		if(cp == null) { //Invalid carpool.
+			return null;
+		}
+		CarPoolIterator iter = new CarPoolIterator(); //Setup iterator & index.
+		int index = 0;
+		while(iter.hasNext(this)) { //Find the carpool, modify it, and return the receipt.
+			CarPoolComponent obj = iter.next(this);
+			if(obj.getClass() == this.getClass() && cp.equals(obj)) {
+				tree.remove(index);
+				return cp;
+			}
+			index++;
+		}
+		return cp;
+	}
+	
 	public void moveCommuter(CarPoolComponent person, CarPoolComponent cp) {}
 	
 	/**
