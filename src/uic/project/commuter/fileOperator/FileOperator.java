@@ -5,6 +5,8 @@ import uic.project.commuter.carPoolData.*;
 
 public abstract class FileOperator {
 	
+	// TODO: Add commentation.
+	
 	private FileOpBehavior behavior;
 	
 	public boolean operate(CarPoolComponent tree, File file) {
