@@ -82,8 +82,51 @@ public class CarPoolComposite extends CarPoolComponent {
 	
 	public void determineLazyCommuter() {}
 	public void determineLazyCommuter(String name) {}
-	public CarPoolComponent findCommuter(String personName) {return null;}
-	public CarPoolComponent findCarpool(String cpName) {return null;}
+	
+	/**
+	 * Finds a requested commuter by name.
+	 * @param personName - The name of the requested commuter.
+	 * @return the requested commuter, by copy.
+	 */
+	public CarPoolComponent findCommuter(String personName) {
+		//Set up the iterator.
+		CarPoolIterator iter = this.getIterator();
+		while(iter.hasNext(this)) {
+			CarPoolComponent obj = iter.next(this);
+			if(this.getClass() == obj.getClass()) {
+				//Set up the iterator for the next tier.
+				CarPoolIterator iterTier2 = this.getIterator();
+				CarPoolComponent objTier2 = iterTier2.next(obj);
+				if(objTier2.getName().equals(personName)) {
+					return objTier2;
+				}
+			} else {
+				if(obj.getName().equals(personName)) {
+					return obj;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Finds a requested carpool by name.
+	 * @param cpName - The name of the requested carpool.
+	 * @return the requested carpool, by copy.
+	 */
+	public CarPoolComponent findCarpool(String cpName) {
+		//Set up the iterator.
+		CarPoolIterator iter = this.getIterator();
+		while(iter.hasNext(this)) {
+			CarPoolComponent obj = iter.next(this);
+			//Checks for the object's status as a CarPoolComposite, and the equality of name.
+			if(obj.getName().equals(cpName) && (obj.getClass() == this.getClass())) {
+				return obj;
+			}
+		}
+		return null;
+	}
+	
 	public CarPoolComponent addCommuter(CarPoolComponent person, CarPoolComponent cp) {return null;}
 	public CarPoolComponent removeCommuter(CarPoolComponent person) {return null;}
 	public CarPoolComponent addCarpool(CarPoolComponent cp, double distance) {return null;}
