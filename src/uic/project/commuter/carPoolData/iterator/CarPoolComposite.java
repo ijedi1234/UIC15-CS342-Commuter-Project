@@ -80,8 +80,62 @@ public class CarPoolComposite extends CarPoolComponent {
 	 */
 	public CarPoolIterator getIterator() {return new CarPoolIterator();}
 	
-	public void determineLazyCommuter() {}
-	public void determineLazyCommuter(String name) {}
+	/**
+	 * Updates the distance for the commuters of all carpools, and resets the leader.
+	 */
+	public void determineLazyCommuter() {
+		//Set up the iterator.
+		CarPoolIterator iter = this.getIterator();
+		while(iter.hasNext(this)) {
+			CarPoolComponent obj = iter.next(this);
+			double min = Double.MAX_VALUE;
+			CarPoolComponent minObj = null;
+			if(this.getClass() == obj.getClass()) {
+				//Set up the iterator for the next tier.
+				CarPoolIterator iterTier2 = this.getIterator();
+				while(iterTier2.hasNext(obj)) {
+					CarPoolComponent objTier2 = iterTier2.next(obj);
+					if(objTier2.getIsLeader()) {
+						objTier2.addDistance(obj.getDistanceTraveled());
+					}
+					if(objTier2.getDistanceTraveled() < min) {
+						min = objTier2.getDistanceTraveled();
+						minObj = objTier2;
+					}
+				}
+				this.toggleLeader(minObj, obj);
+			}
+		}
+	}
+	
+	/**
+	 * Updates the distance for the commuters of a given carpool, and resets the leader.
+	 * @param name - The name of the carpool
+	 */
+	public void determineLazyCommuter(String name) {
+		//Set up the iterator.
+		CarPoolIterator iter = this.getIterator();
+		while(iter.hasNext(this)) {
+			CarPoolComponent obj = iter.next(this);
+			double min = Double.MAX_VALUE;
+			CarPoolComponent minObj = null;
+			if(this.getClass() == obj.getClass() && name.equals(obj.getName())) {
+				//Set up the iterator for the next tier.
+				CarPoolIterator iterTier2 = this.getIterator();
+				while(iterTier2.hasNext(obj)) {
+					CarPoolComponent objTier2 = iterTier2.next(obj);
+					if(objTier2.getIsLeader()) {
+						objTier2.addDistance(obj.getDistanceTraveled());
+					}
+					if(objTier2.getDistanceTraveled() < min) {
+						min = objTier2.getDistanceTraveled();
+						minObj = objTier2;
+					}
+				}
+				this.toggleLeader(minObj, obj);
+			}
+		}
+	}
 	
 	/**
 	 * Finds a requested commuter by name.
@@ -96,9 +150,11 @@ public class CarPoolComposite extends CarPoolComponent {
 			if(this.getClass() == obj.getClass()) {
 				//Set up the iterator for the next tier.
 				CarPoolIterator iterTier2 = this.getIterator();
-				CarPoolComponent objTier2 = iterTier2.next(obj);
-				if(objTier2.getName().equals(personName)) {
-					return objTier2;
+				while(iterTier2.hasNext(obj)) {
+					CarPoolComponent objTier2 = iterTier2.next(obj);
+					if(objTier2.getName().equals(personName)) {
+						return objTier2;
+					}
 				}
 			} else {
 				if(obj.getName().equals(personName)) {
