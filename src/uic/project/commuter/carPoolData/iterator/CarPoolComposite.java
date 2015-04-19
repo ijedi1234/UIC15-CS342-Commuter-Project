@@ -139,6 +139,7 @@ public class CarPoolComposite extends CarPoolComponent {
 		if(person == null || this.findCommuter(person.getName()) != null) { //Invalid person or existing person.
 			return null;
 		}
+		person.setIsLeader(true); //Enforce leadership for commuter initially.
 		if(cp == null) { //Null cp? Then it must be the head.
 			tree.add(0, person);
 			return person;
@@ -148,6 +149,8 @@ public class CarPoolComposite extends CarPoolComponent {
 		while(iter.hasNext(this)) { //Find the carpool, modify it, and return the receipt.
 			CarPoolComponent obj = iter.next(this);
 			if(obj.getClass() == this.getClass() && cp.equals(obj)) {
+				if(obj.getTree().size() > 0)
+					person.setIsLeader(false); //Further additions to non-zero carpools shouldn't be leaders at start.
 				obj.addCommuter(person, null);
 				tree.set(index, obj);
 				return person;
@@ -223,7 +226,20 @@ public class CarPoolComposite extends CarPoolComponent {
 		return cp;
 	}
 	
-	public void moveCommuter(CarPoolComponent person, CarPoolComponent cp) {}
+	/**
+	 * Moves a commuter to the suggested carpool. (null is head)
+	 * ONLY the head should use this method in other classes.
+	 * @param person - The person to move. The caller is responsible for generating the correct person.
+	 * @param cp - The carpool to move too.
+	 */
+	public void moveCommuter(CarPoolComponent person, CarPoolComponent cp) {
+		//Determine validness, and remove->add
+		if(person == null) {
+			return;
+		}
+		this.removeCommuter(person);
+		this.addCommuter(person, cp);
+	}
 	
 	/**
 	 * This toggles a particular commuter in a carpool to be leader.
