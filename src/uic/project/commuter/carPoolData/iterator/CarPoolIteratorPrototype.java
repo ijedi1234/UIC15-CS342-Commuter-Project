@@ -1,4 +1,9 @@
+package uic.project.commuter.carPoolData.iterator;
+
 // interface of CarPoolIteratorPrototype
+
+import uic.project.commuter.carPoolData.*;
+
 public interface CarPoolIteratorPrototype 
 {
 	/** hasNext(obj) will check to see if there is any

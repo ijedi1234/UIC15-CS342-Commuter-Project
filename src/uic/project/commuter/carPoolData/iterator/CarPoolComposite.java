@@ -12,6 +12,7 @@ public class CarPoolComposite extends CarPoolComponent {
 		this.setName("");
 		this.setStatus(true);
 		this.resetDistance();
+		tree = new ArrayList<CarPoolComponent>();
 	}
 	
 	public CarPoolComposite(String tag, boolean inputStat, double dist) {
@@ -19,6 +20,7 @@ public class CarPoolComposite extends CarPoolComponent {
 		this.setStatus(inputStat);
 		this.resetDistance();
 		this.addDistance(dist);
+		tree = new ArrayList<CarPoolComponent>();
 	}
 	
 	/**
@@ -355,12 +357,62 @@ public class CarPoolComposite extends CarPoolComponent {
 	/**
 	 * Activates this object.
 	 */
-	public void activate(String name) {this.setStatus(true);}
+	public void activate(String name) {
+		CarPoolIterator iter = this.getIterator();
+	
+		while(iter.hasNext(this)) {
+			CarPoolComponent currentObject = iter.next(this);
+			if(currentObject.getName().equals(name) && this.getClass() == currentObject.getClass()) {
+				this.removeCarpool(currentObject);
+				currentObject.setStatus(true);
+				this.addCarpool(currentObject, currentObject.getDistanceTraveled());
+			} else if(currentObject.getName().equals(name)) {
+				this.removeCommuter(currentObject);
+				currentObject.setStatus(true);
+				this.addCommuter(currentObject, null);
+			}
+			CarPoolIterator tier2Iter = this.getIterator();
+			//As this class is a CarPoolComposite, I can use this class for ensuring I further operate on CarPoolComposites.
+			if(currentObject.getClass() == this.getClass()) {
+				while(tier2Iter.hasNext(currentObject)) {
+					CarPoolComponent objTier2 = tier2Iter.next(currentObject);
+					this.removeCommuter(objTier2);
+					objTier2.setStatus(true);
+					this.addCommuter(objTier2, null);
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Deactivates this object.
 	 */
-	public void deactivate(String name) {this.setStatus(false);}
+	public void deactivate(String name) {
+		CarPoolIterator iter = this.getIterator();
+	
+		while(iter.hasNext(this)) {
+			CarPoolComponent currentObject = iter.next(this);
+			if(currentObject.getName().equals(name) && this.getClass() == currentObject.getClass()) {
+				this.removeCarpool(currentObject);
+				currentObject.setStatus(false);
+				this.addCarpool(currentObject, currentObject.getDistanceTraveled());
+			} else if(currentObject.getName().equals(name)) {
+				this.removeCommuter(currentObject);
+				currentObject.setStatus(false);
+				this.addCommuter(currentObject, null);
+			}
+			CarPoolIterator tier2Iter = this.getIterator();
+			//As this class is a CarPoolComposite, I can use this class for ensuring I further operate on CarPoolComposites.
+			if(currentObject.getClass() == this.getClass()) {
+				while(tier2Iter.hasNext(currentObject)) {
+					CarPoolComponent objTier2 = tier2Iter.next(currentObject);
+					this.removeCommuter(objTier2);
+					objTier2.setStatus(false);
+					this.addCommuter(objTier2, null);
+				}
+			}
+		}
+	}
 	
 	/**
 	 * All methods below do no meaningful work as they are not considered to be a useful part of this class.

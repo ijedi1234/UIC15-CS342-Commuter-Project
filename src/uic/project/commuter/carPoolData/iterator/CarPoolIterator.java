@@ -1,5 +1,11 @@
+package uic.project.commuter.carPoolData.iterator;
+
 // CarPoolIterator public class that implements the 
 // CarPoolIteratorPrototype interface
+
+
+import uic.project.commuter.carPoolData.*;
+
 public class CarPoolIterator implements CarPoolIteratorPrototype
 {
 	/** The fields that is used store the number of 
@@ -24,10 +30,9 @@ public class CarPoolIterator implements CarPoolIteratorPrototype
 	 *  
 	 *  @return true if there exist an element else false
 	 */
-	@Override
 	public boolean hasNext(CarPoolComponent obj) 
 	{
-		if(index < obj.getTree().size())
+		if(index < (obj.getTree().size() - 1))
 		{
 			return true;
 		}
@@ -42,13 +47,12 @@ public class CarPoolIterator implements CarPoolIteratorPrototype
 	 *  
 	 *  @return obj's next element
 	 */
-	@Override
 	public CarPoolComponent next(CarPoolComponent obj) 
 	{
 		if(this.hasNext(obj))
 		{
 			index++;
-			return obj.get(index);
+			return obj.getTree().get(index);
 		}
 		return null;
 	}
@@ -58,7 +62,6 @@ public class CarPoolIterator implements CarPoolIteratorPrototype
 	 * 
 	 *  @param obj whose elements will be cleared off the list
 	 */
-	@Override
 	public void reset(CarPoolComponent obj) 
 	{
 		index = -1;
