@@ -64,7 +64,6 @@ public class CarPoolComposite extends CarPoolComponent {
 			//As this class is a CarPoolComposite, I can use this class for ensuring I further operate on CarPoolComposites.
 			if(currentObject.getClass() == this.getClass()) {
 				while(tier2Iter.hasNext(currentObject)) {
-					System.out.print("     ");
 					tier2Iter.next(currentObject).printSelf();
 				}
 			}
@@ -100,7 +99,7 @@ public class CarPoolComposite extends CarPoolComponent {
 					if(objTier2.getIsLeader()) {
 						objTier2.addDistance(obj.getDistanceTraveled());
 					}
-					if(objTier2.getDistanceTraveled() < min) {
+					if(objTier2.getDistanceTraveled() < min && objTier2.getStatus()) {
 						min = objTier2.getDistanceTraveled();
 						minObj = objTier2;
 					}
@@ -129,7 +128,7 @@ public class CarPoolComposite extends CarPoolComponent {
 					if(objTier2.getIsLeader()) {
 						objTier2.addDistance(obj.getDistanceTraveled());
 					}
-					if(objTier2.getDistanceTraveled() < min) {
+					if(objTier2.getDistanceTraveled() < min & objTier2.getStatus()) {
 						min = objTier2.getDistanceTraveled();
 						minObj = objTier2;
 					}
@@ -276,7 +275,14 @@ public class CarPoolComposite extends CarPoolComponent {
 		while(iter.hasNext(this)) { //Find the carpool, modify it, and return the receipt.
 			CarPoolComponent obj = iter.next(this);
 			if(obj.getClass() == this.getClass() && cp.equals(obj)) {
+				CarPoolIterator tier2Iter = this.getIterator();
 				tree.remove(index);
+				//As this class is a CarPoolComposite, I can use this class for ensuring I further operate on CarPoolComposites.
+				while(tier2Iter.hasNext(obj)) {
+					CarPoolComponent objTier2 = tier2Iter.next(obj);
+					objTier2.setIsLeader(true); //Each will command a carpool.
+					this.addCommuter(objTier2, null); //Displace the existing commuters into the second level.
+				}
 				return cp;
 			}
 			index++;
