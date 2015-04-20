@@ -196,7 +196,7 @@ public class CarPoolComposite extends CarPoolComponent {
 		if(person == null || this.findCommuter(person.getName()) != null) { //Invalid person or existing person.
 			return null;
 		}
-		person.setIsLeader(true); //Enforce leadership for commuter initially.
+		//person.setIsLeader(true); //Enforce leadership for commuter initially.
 		if(cp == null) { //Null cp? Then it must be the head.
 			tree.add(0, person);
 			return person;
@@ -320,28 +320,14 @@ public class CarPoolComposite extends CarPoolComponent {
 			return;
 		}
 		
-		//Set up the iterator.
-		CarPoolIterator CPiter = cp.getIterator();
-		//A safety boolean for reporting the commuter's existence.
-		boolean bFoundCommuter = false;
-		
-		while(CPiter.hasNext(cp)) {
-			//Check for the valid commuter, first.
-			CarPoolComponent currentObject = CPiter.next(cp);
-			if(currentObject.equals(person) && currentObject.getStatus()) {
-				person.setIsLeader(true);
-				bFoundCommuter = true;
-			}
-		}
-		
 		//No more work to be done if the commuter does not exist.
-		if(!bFoundCommuter) {
+		if(this.findCommuter(person.getName()) == null) {
 			System.out.println("Error: The commuter specified is either inactive or nonexistent.");
 			return;
 		}
 		
-		//reset the iterator
-		CPiter.reset(cp);
+		//Set up the iterator.
+		CarPoolIterator CPiter = cp.getIterator();
 		
 		//Purge the carpool of isLeader = true.
 		while(CPiter.hasNext(cp)) {
@@ -357,7 +343,18 @@ public class CarPoolComposite extends CarPoolComponent {
 		
 		//Finally, replace with the promoted commuter.
 		this.removeCommuter(person);
-		this.addCommuter(person, cp);
+		person.setIsLeader(true);
+		CarPoolIterator iter = new CarPoolIterator(); //Setup iterator & index.
+		int index = 0;
+		while(iter.hasNext(this)) { //Find the carpool, modify it, and leave the method.
+			CarPoolComponent obj = iter.next(this);
+			if(obj.getClass() == this.getClass() && cp.equals(obj)) {
+				obj.addCommuter(person, null);
+				tree.set(index, obj);
+				return;
+			}
+			index++;
+		}
 	}
 	
 	/**

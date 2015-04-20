@@ -119,9 +119,16 @@ public class MainClass {
 				String[] secondSet = new String[4];
 				secondSet = parser.parse(inputArgs[3]);
 				if(differentiator.equals("com")) {
-					tree.addCommuter(tree.findCommuter(inputArgs[2]), tree.findCarpool(secondSet[0]));
+					if(tree.findCarpool(secondSet[0]) == null)
+						System.out.println("Unable to find a suitable carpool! Adding to head...");
+					tree.addCommuter(new CommuterElement(inputArgs[2], true, 0.0, true), tree.findCarpool(secondSet[0]));
 				} else if(differentiator.equals("cp")) {
-					tree.addCarpool(tree.findCarpool(inputArgs[2]), Double.parseDouble(secondSet[0]));
+					try {
+						double passedDouble = Double.valueOf(secondSet[0]);
+					tree.addCarpool(new CarPoolComposite(inputArgs[2], true, passedDouble), passedDouble);
+					} catch (NumberFormatException e) {
+						System.out.println("Invalid double!");
+					}
 				} else {
 					System.out.println("Error: Invalid second argument.");
 				}
@@ -139,7 +146,7 @@ public class MainClass {
 				}
 			} else if(command.equals("toggle")) {
 				//Informs the tree to override the leader of a carpool.
-				tree.toggleLeader(tree.findCommuter(inputArgs[1]), tree);
+				tree.toggleLeader(tree.findCommuter(inputArgs[1]), tree.findCarpool(inputArgs[2]));
 			} else if(command.equals("activate")) {
 				//Activate the given object.
 				tree.activate(inputArgs[1]);
@@ -155,7 +162,7 @@ public class MainClass {
 			}
 		}
 		//Offer to save the file.
-		System.out.print("\nWould you like to save (y/n)? ");
+		System.out.print("\nWould you like to save? (y/n)");
 		inputArgs = parser.parse(argsObject.nextLine());
 		//yes or y are the most usual answers to this, given the prompt.
 		if(inputArgs[0].equals("yes") || inputArgs[0].equals("y")) {
@@ -164,12 +171,8 @@ public class MainClass {
 			inputArgs = parser.parse(argsObject.nextLine());
 			saver.operate(tree, new File(inputArgs[0]));
 		}
-		// Do final operations before termination.
+		//Do final operations before termination.
 		argsObject.close();
-
-        // Exit program
-        System.out.println("Good bye.");
-        System.exit(0);
 	}
 	
 	/**
