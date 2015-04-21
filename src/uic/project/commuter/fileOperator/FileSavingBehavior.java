@@ -12,7 +12,7 @@ import java.nio.file.StandardOpenOption;
 import uic.project.commuter.carPoolData.*;
 import uic.project.commuter.carPoolData.iterator.CarPoolComposite;
 
-public class FileSavingBehavior implements FileOpBehavior {
+public class FileSavingBehavior implements FileOperationBehavior {
 
 	/**
 	 * This function will save the information from the tree and place it into the file.
@@ -32,10 +32,11 @@ public class FileSavingBehavior implements FileOpBehavior {
 			return false;
 		}
 
-		// // Make sure the file object is not null.
-		// if (file == null) {
-		//			System.err.println("The file can not be saved. No file will be created."); //$NON-NLS-1$
-		// }
+		// Make sure the file object is not null.
+		if (file == null) {
+			System.err.println("The file can not be saved. No file will be created."); //$NON-NLS-1$
+			return false;
+		}
 
 		// Warn the user if the an existing file will be over-written.
 		if (file.exists()) {
@@ -63,7 +64,7 @@ public class FileSavingBehavior implements FileOpBehavior {
 
 					CarPoolComposite a = (CarPoolComposite) tree.getTree().get(i);
 
-					writer.write("M, " + a.getName() + ", " + a.getStatus() + ", " + a.getDistanceTraveled() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					writer.write("P, " + a.getName() + ", " + a.getStatus() + ", " + a.getDistanceTraveled() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 					writer.flush();
 

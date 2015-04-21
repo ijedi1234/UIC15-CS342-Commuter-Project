@@ -6,7 +6,7 @@ import uic.project.commuter.carPoolData.*;
 public abstract class FileOperator {
 
 	// This is the behavior that will perform the file operation.
-	private FileOpBehavior behavior;
+	private FileOperationBehavior behavior;
 
 	/**
 	 * This function will perform the designated behavior onto the file.
@@ -27,7 +27,7 @@ public abstract class FileOperator {
 	 * @param newBehavior
 	 *            the behavior to set.
 	 */
-	protected void setBehavior(FileOpBehavior newBehavior) {
+	protected void setBehavior(FileOperationBehavior newBehavior) {
 		this.behavior = newBehavior;
 	}
 }

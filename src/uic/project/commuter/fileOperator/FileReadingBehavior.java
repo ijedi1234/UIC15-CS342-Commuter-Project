@@ -1,17 +1,16 @@
 package uic.project.commuter.fileOperator;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
-
 import uic.project.commuter.carPoolData.*;
 import uic.project.commuter.carPoolData.iterator.CarPoolComposite;
 
-public class FileReadingBehavior implements FileOpBehavior {
+public class FileReadingBehavior implements FileOperationBehavior {
 
 	/**
 	 * This function will read the file provided and place the information into the tree.
@@ -75,7 +74,6 @@ public class FileReadingBehavior implements FileOpBehavior {
 				}
 				
 				if (line[0].equals("M")) { //$NON-NLS-1$
-										
 					if (currentCarPool.equals("N/A")) { //$NON-NLS-1$						
 						tree.addCommuter(new CommuterElement(line[1], Boolean.parseBoolean(line[2]), Double.parseDouble(line[4]), Boolean.parseBoolean(line[3])), tree.findCarpool("")); //$NON-NLS-1$
 					} else {

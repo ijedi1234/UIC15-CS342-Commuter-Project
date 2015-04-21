@@ -3,7 +3,7 @@ package uic.project.commuter.fileOperator;
 import java.io.File;
 import uic.project.commuter.carPoolData.*;
 
-public interface FileOpBehavior {
+public interface FileOperationBehavior {
 
 	/**
 	 * This function will do a designated operation on the file provided related to the commuter data located in the tree.
