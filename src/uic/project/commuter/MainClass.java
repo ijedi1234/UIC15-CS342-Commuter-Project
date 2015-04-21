@@ -66,7 +66,7 @@ public class MainClass {
 					if(foundObject == null) {
 						System.out.println("Error: There is no carpool with that name.");
 					} else {
-						foundObject.printSelf();
+						foundObject.printLevel();
 					}
 				} else if(differentiator.equals("self")) {
 					//Prints the information for the given object, should it exist.

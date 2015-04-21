@@ -96,7 +96,7 @@ public class CarPoolComposite extends CarPoolComponent {
 				CarPoolIterator iterTier2 = this.getIterator();
 				while(iterTier2.hasNext(obj)) {
 					CarPoolComponent objTier2 = iterTier2.next(obj);
-					if(objTier2.getIsLeader()) {
+					if(objTier2.getIsLeader() && objTier2.getStatus()) {
 						objTier2.addDistance(obj.getDistanceTraveled());
 					}
 					if(objTier2.getDistanceTraveled() < min && objTier2.getStatus()) {
@@ -120,15 +120,15 @@ public class CarPoolComposite extends CarPoolComponent {
 			CarPoolComponent obj = iter.next(this);
 			double min = Double.MAX_VALUE;
 			CarPoolComponent minObj = null;
-			if(this.getClass() == obj.getClass() && name.equals(obj.getName())) {
+			if(this.getClass() == obj.getClass() && name.equals(obj.getName()) && obj.getStatus()) {
 				//Set up the iterator for the next tier.
 				CarPoolIterator iterTier2 = this.getIterator();
 				while(iterTier2.hasNext(obj)) {
 					CarPoolComponent objTier2 = iterTier2.next(obj);
-					if(objTier2.getIsLeader()) {
+					if(objTier2.getIsLeader() && objTier2.getStatus()) {
 						objTier2.addDistance(obj.getDistanceTraveled());
 					}
-					if(objTier2.getDistanceTraveled() < min & objTier2.getStatus()) {
+					if(objTier2.getDistanceTraveled() < min && objTier2.getStatus()) {
 						min = objTier2.getDistanceTraveled();
 						minObj = objTier2;
 					}
@@ -193,7 +193,9 @@ public class CarPoolComposite extends CarPoolComponent {
 	 * @return A receipt for the added person.
 	 */
 	public CarPoolComponent addCommuter(CarPoolComponent person, CarPoolComponent cp) {
-		if(person == null || this.findCommuter(person.getName()) != null) { //Invalid person or existing person.
+		 //Invalid person or existing carpool/commuter.
+		if(person == null || this.findCommuter(person.getName()) != null ||  this.findCarpool(person.getName()) != null ) {
+			System.out.println("Error: Either this object exists or the object to add is null.");
 			return null;
 		}
 		//person.setIsLeader(true); //Enforce leadership for commuter initially.
@@ -232,11 +234,11 @@ public class CarPoolComposite extends CarPoolComponent {
 		int index = 0;
 		while(iter.hasNext(this)) { //Find the commuter and remove. If carpools are found, apply this method.
 			CarPoolComponent obj = iter.next(this);
-			if(obj.getClass() == this.getClass()) {
+			if(obj.getClass() == this.getClass()) { //Use recursion to dela with lower levels.
 				obj.removeCommuter(person);
 				tree.set(index, obj);
 				return person;
-			} else if(obj.equals(person)) {
+			} else if(obj.equals(person)) { //Delete the person.
 				tree.remove(index);
 				return person;
 			}
@@ -253,7 +255,9 @@ public class CarPoolComposite extends CarPoolComponent {
 	 * @return A receipt for the added carpool.
 	 */
 	public CarPoolComponent addCarpool(CarPoolComponent cp, double distance) {
-		if(cp == null || this.findCarpool(cp.getName()) != null) { //Invalid carpool or existing carpool.
+		 //Invalid carpool or existing carpool/commuter.
+		if(cp == null || this.findCarpool(cp.getName()) != null || this.findCommuter(cp.getName()) != null) {
+			System.out.println("Error: Either this object exists or the object to add is null.");
 			return null;
 		}
 		tree.add(cp); //Add to the end and return.
@@ -302,6 +306,11 @@ public class CarPoolComposite extends CarPoolComponent {
 			return;
 		}
 		this.removeCommuter(person);
+		if(cp == null) { //If sent to second level, modify to defaults.
+			System.out.println("Unable to find a suitable carpool! Adding to head...");
+			person.resetDistance();
+			person.setIsLeader(true);
+		}
 		this.addCommuter(person, cp);
 	}
 	
@@ -313,10 +322,13 @@ public class CarPoolComposite extends CarPoolComponent {
 	 * @param cp - The carpool to operate within.
 	 */
 	public void toggleLeader(CarPoolComponent person, CarPoolComponent cp) {
-		//if there is no such carpool, leave. cpCopy is the entry found in the data structure.
-		CarPoolComponent cpCopy = this.findCarpool(cp.getName());
-		if(cpCopy == null || cpCopy.getStatus() == false) {
+		//Determine each parameters' existence and usability.
+		if(cp == null || cp.getStatus() == false) {
 			System.out.println("Error: The carpool specified is either inactive or nonexistent.");
+			return;
+		}
+		if(person == null || person.getStatus() == false) {
+			System.out.println("Error: The commuter specified is either inactive or nonexistent.");
 			return;
 		}
 		
@@ -359,12 +371,14 @@ public class CarPoolComposite extends CarPoolComponent {
 	
 	/**
 	 * Activates this object.
+	 * @param name - The name of the object to activate.
 	 */
 	public void activate(String name) {
 		CarPoolIterator iter = this.getIterator();
 	
 		while(iter.hasNext(this)) {
 			CarPoolComponent currentObject = iter.next(this);
+			//Handle second-level adjustments.
 			if(currentObject.getName().equals(name) && this.getClass() == currentObject.getClass()) {
 				this.removeCarpool(currentObject);
 				currentObject.setStatus(true);
@@ -375,7 +389,7 @@ public class CarPoolComposite extends CarPoolComponent {
 				this.addCommuter(currentObject, null);
 			}
 			CarPoolIterator tier2Iter = this.getIterator();
-			//As this class is a CarPoolComposite, I can use this class for ensuring I further operate on CarPoolComposites.
+			//Operate on deeper commuters if needed.
 			if(currentObject.getClass() == this.getClass()) {
 				while(tier2Iter.hasNext(currentObject)) {
 					CarPoolComponent objTier2 = tier2Iter.next(currentObject);
@@ -389,6 +403,7 @@ public class CarPoolComposite extends CarPoolComponent {
 	
 	/**
 	 * Deactivates this object.
+	 * @param name - The name of the object to deactivate.
 	 */
 	public void deactivate(String name) {
 		CarPoolIterator iter = this.getIterator();

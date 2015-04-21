@@ -39,7 +39,7 @@ public abstract class CarPoolComponent {
 	
 	public double getDistanceTraveled() {return distanceTraveled;}
 	
-	public void addDistance(double distanceTraveled) {this.distanceTraveled = distanceTraveled;}
+	public void addDistance(double distanceTraveled) {this.distanceTraveled += distanceTraveled;}
 	
 	public void resetDistance() {distanceTraveled = 0;}
 }

@@ -12,7 +12,8 @@ public class CommuterElement extends CarPoolComponent {
 	 * Print out available information on 'this' object. The tree is not printed here.
 	 */
 	public void printSelf() {
-		System.out.print("Name: " + this.getName() + " Status: " + this.getStatus() 
+		System.out.print("     ");
+		System.out.println("Name: " + this.getName() + " Status: " + this.getStatus() 
 				+ " Associated Distance: " + this.getDistanceTraveled() + " Is Leader? " + this.getIsLeader());
 	}
 	
