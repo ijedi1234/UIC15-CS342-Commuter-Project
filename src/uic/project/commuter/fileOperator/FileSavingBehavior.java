@@ -1,6 +1,7 @@
 package uic.project.commuter.fileOperator;
 
 import java.io.BufferedWriter;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import uic.project.commuter.carPoolData.*;
+import uic.project.commuter.carPoolData.iterator.CarPoolComposite;
 
 public class FileSavingBehavior implements FileOpBehavior {
 
@@ -30,10 +32,10 @@ public class FileSavingBehavior implements FileOpBehavior {
 			return false;
 		}
 
-		// Make sure the file object is not null.
-		if (file == null) {
-			System.err.println("The file can not be saved. No file will be created."); //$NON-NLS-1$
-		}
+		// // Make sure the file object is not null.
+		// if (file == null) {
+		//			System.err.println("The file can not be saved. No file will be created."); //$NON-NLS-1$
+		// }
 
 		// Warn the user if the an existing file will be over-written.
 		if (file.exists()) {
@@ -47,27 +49,32 @@ public class FileSavingBehavior implements FileOpBehavior {
 
 		try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE);) {
 
-			// tree.getTree().get(0).
-
 			for (int i = 0; i < tree.getTree().size(); i++) {
 
-				if (tree.getTree().get(i) instanceof CarPoolComposite) {
+				if (tree.getTree().get(i) instanceof CommuterElement) {
 
-					/*
-					 * CarPoolIterator carPoolIterator = tree.getIterator(); CarPoolComponent carPoolComponent = tree.getTree().get(i);
-					 * 
-					 * while(carPoolIterator.hasNext(carPoolComponent)) { CarPoolComponent currentObject = carPoolIterator.next(carPoolComponent); currentObject.printSelf();
-					 * CarPoolIterator tier2Iter = this.getIterator(); //As this class is a CarPoolComposite, I can use this class for ensuring I further operate on
-					 * CarPoolComposites. if(currentObject.getClass() == this.getClass()) { while(tier2Iter.hasNext(currentObject)) { System.out.print("     ");
-					 * tier2Iter.next(currentObject).printSelf(); } } }
-					 */
+					CommuterElement commuter = ((CommuterElement) tree.getTree().get(i));
 
-				} else if (tree.getTree().get(i) instanceof CommuterElement) {
-
-					writer.write("M, " + ((CommuterElement) tree.getTree().get(i)).getName() + ", " + ((CommuterElement) tree.getTree().get(i)).getStatus() + ", " + ((CommuterElement) tree.getTree().get(i)).getDistanceTraveled()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					writer.write("M, " + commuter.getName() + ", " + commuter.getStatus() + ", " + commuter.getIsLeader() + ", " + commuter.getDistanceTraveled() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
 					writer.flush();
 
+				} else if (tree.getTree().get(i) instanceof CarPoolComposite) {
+
+					CarPoolComposite a = (CarPoolComposite) tree.getTree().get(i);
+
+					writer.write("M, " + a.getName() + ", " + a.getStatus() + ", " + a.getDistanceTraveled() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+					writer.flush();
+
+					for (int j = 0; j < a.getTree().size(); j++) {
+
+						CommuterElement commuter = ((CommuterElement) tree.getTree().get(j));
+
+						writer.write("M, " + commuter.getName() + ", " + commuter.getStatus() + ", " + commuter.getIsLeader() + ", " + commuter.getDistanceTraveled() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+
+						writer.flush();
+					}
 				}
 
 			}
@@ -76,6 +83,7 @@ public class FileSavingBehavior implements FileOpBehavior {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 
 		return true;
